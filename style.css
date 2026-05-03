@@ -54,6 +54,24 @@ input {
     border: 1px solid #ddd;
 }
 
+input:hover {
+    border-color: #c7d2fe;
+}
+
+input:focus {
+    outline: none;
+    border-color: #0866FF;
+
+    box-shadow: 0 0 0 3px rgba(108, 92, 231, 0.15);
+    transform: translateY(-1px);
+}
+
+input::placeholder {
+    color: #9ca3af;
+}
+
+
+
 /* CAMPO */
 .field {
     position: relative;
@@ -74,15 +92,44 @@ input {
     cursor: pointer;
 }
 
-/* BOTÃO */
+
+/* ===== BOTÃO PREMIUM ===== */
 button {
     width: 100%;
-    padding: 14px;
+    padding: 15px;
+    border-radius: 14px;
     border: none;
-    border-radius: 12px;
-    background: #0866FF;
+
+    background: linear-gradient(135deg, #0866FF, #0966FF);
     color: white;
+
+    font-size: 15px;
+    font-weight: 500;
+
     cursor: pointer;
+
+    transition: all 0.25s ease;
+
+    box-shadow: 0 8px 20px rgba(108, 92, 231, 0.25);
+}
+
+/* HOVER (SOBE) */
+button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 28px rgba(108, 92, 231, 0.35);
+}
+
+/* CLIQUE (PRESSIONA) */
+button:active {
+    transform: translateY(0);
+    box-shadow: 0 6px 14px rgba(108, 92, 231, 0.2);
+}
+
+/* DISABLED (futuro) */
+button:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+    box-shadow: none;
 }
 
 /* ===== MODAL ===== */
