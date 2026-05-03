@@ -1,40 +1,86 @@
+// ===== CONFIGURAÇÃO CENTRAL =====
+const MEDIDAS = [
+    {
+        id: "busto",
+        label: "Busto (cm)",
+        img: "img/busto.jpg",
+        texto: "Passe a fita ao redor da parte mais cheia do busto."
+    },
+    {
+        id: "cintura",
+        label: "Cintura (cm)",
+        img: "img/cintura.jpg",
+        texto: "Meça a parte mais fina da cintura."
+    },
+    {
+        id: "alturaFrente",
+        label: "Altura Frente (cm)",
+        img: "img/frente.jpg",
+        texto: "Do ombro até a cintura pela frente. Passar a fita por cima do seio."
+    },
+    {
+        id: "alturaCostas",
+        label: "Altura Costas (cm)",
+        img: "img/costas.jpg",
+        texto: "Do ombro até a cintura pelas costas."
+    },
+    {
+        id: "ombro",
+        label: "Ombro a Ombro (cm)",
+        img: "img/ombro.jpg",
+        texto: "De um ombro ao outro. Medir com a fita métrica solta."
+    },
+    
+    {
+        id: "alt busto",
+        label: "Altura do Busto (cm)",
+        img: "img/altbusto.jpg",
+        texto: "Da ponta do ombro até o bico do seio ou a parte mais volumosa do seio."
+    },
+    
+    
+    
+    
+];
+
+// ===== GERAR CAMPOS =====
+function renderCampos() {
+
+    const container = document.getElementById("campos-medidas");
+
+    MEDIDAS.forEach(m => {
+        const div = document.createElement("div");
+        div.className = "field";
+
+        div.innerHTML = `
+            <input type="number" id="${m.id}" placeholder="${m.label}">
+            <span class="help" onclick="abrirModal('${m.id}')">?</span>
+        `;
+
+        container.appendChild(div);
+    });
+}
+
+renderCampos();
+
 // ===== MODAL =====
 function abrirModal(tipo) {
+    const medida = MEDIDAS.find(m => m.id === tipo);
 
-    const modal = document.getElementById("modal");
+    document.getElementById("modal-img").src = medida.img;
+    document.getElementById("texto").innerText = medida.texto;
 
-    const imagens = {
-        busto: "img/busto.jpg",
-        cintura: "img/cintura.jpg",
-        frente: "img/frente.jpg",
-        costas: "img/costas.jpg",
-        ombro: "img/ombro.jpg"
-    };
-
-    const textos = {
-        busto: "Passe a fita ao redor da parte mais cheia do busto.",
-        cintura: "Meça a parte mais fina da cintura.",
-        frente: "Do ombro até a cintura pela frente.",
-        costas: "Do ombro até a cintura pelas costas.",
-        ombro: "De um ombro ao outro. Com a fita métrica solta"
-    };
-
-    document.getElementById("modal-img").src = imagens[tipo];
-    document.getElementById("texto").innerText = textos[tipo];
-
-    modal.classList.remove("hidden");
+    document.getElementById("modal").classList.remove("hidden");
 }
 
 function fecharModal() {
     document.getElementById("modal").classList.add("hidden");
 }
 
-// FECHAR CLICANDO FORA
+// fechar clicando fora
 window.onclick = function(e) {
     const modal = document.getElementById("modal");
-    if (e.target === modal) {
-        fecharModal();
-    }
+    if (e.target === modal) fecharModal();
 };
 
 // ===== PDF + WHATSAPP =====
@@ -46,15 +92,7 @@ function gerarPDF() {
     const nome = document.getElementById("nome").value;
     const whats = document.getElementById("whats").value;
 
-    const dados = {
-        busto: document.getElementById("busto").value,
-        cintura: document.getElementById("cintura").value,
-        alturaFrente: document.getElementById("alturaFrente").value,
-        alturaCostas: document.getElementById("alturaCostas").value,
-        ombro: document.getElementById("ombro").value
-    };
-
-    // HEADER
+     // HEADER
     doc.setFillColor(0, 0, 0);
     doc.rect(0, 0, 210, 25, "F");
 
@@ -65,19 +103,19 @@ function gerarPDF() {
 
     doc.text(`Nome: ${nome}`, 20, 40);
     doc.text(`WhatsApp: ${whats}`, 20, 50);
+    
+        
+    
+    let y = 40;
 
-    let y = 70;
+    doc.text(`Nome: ${nome}`, 20, y);
+    y += 10;
+    doc.text(`WhatsApp: ${whats}`, 20, y);
+    y += 15;
 
-    const medidas = [
-        ["Busto", dados.busto],
-        ["Cintura", dados.cintura],
-        ["Altura Frente", dados.alturaFrente],
-        ["Altura Costas", dados.alturaCostas],
-        ["Ombro", dados.ombro]
-    ];
-
-    medidas.forEach(m => {
-        doc.text(`${m[0]}: ${m[1]} cm`, 20, y);
+    MEDIDAS.forEach(m => {
+        const valor = document.getElementById(m.id).value;
+        doc.text(`${m.label}: ${valor} cm`, 20, y);
         y += 10;
     });
 
@@ -85,16 +123,14 @@ function gerarPDF() {
 
     const numero = "5551998899069";
 
-    const msg = `Olá, meu nome é ${nome}.
-Segue minhas medidas:
+    let msg = `Olá, meu nome é ${nome}.
+Segue minhas medidas:\n`;
 
-Busto: ${dados.busto} cm
-Cintura: ${dados.cintura} cm
-Altura Frente: ${dados.alturaFrente} cm
-Altura Costas: ${dados.alturaCostas} cm
-Ombro: ${dados.ombro} cm`;
+    MEDIDAS.forEach(m => {
+        const valor = document.getElementById(m.id).value;
+        msg += `${m.label}: ${valor} cm\n`;
+    });
 
     const url = `https://wa.me/${numero}?text=${encodeURIComponent(msg)}`;
-
     window.open(url, "_blank");
 }
